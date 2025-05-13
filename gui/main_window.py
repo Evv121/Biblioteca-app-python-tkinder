@@ -1,6 +1,8 @@
 import tkinter as tk
 from tkinter import messagebox
 
+from gui.add_book_fom import AddBookForm
+
 class MainWindow: 
     def __init__(self, root):
         self.root = root
@@ -30,7 +32,13 @@ class MainWindow:
 
     def add_book(self):
         #Aquí podemos abrir un formulario para agregar un libro
-        messagebox.showinfo("Add Book", "Form to add a book")
+        form = AddBookForm(self.root)
+
+        if form.result:
+            title = form.result["title"]
+            author = form.result["author"]
+            display_text = f"{title} by {author}"
+            self.books_listbox.insert(tk.END, display_text)
 
     def edit_book(self):
         # Aquí podrías abrir un formulario para editar un libro seleccionado
