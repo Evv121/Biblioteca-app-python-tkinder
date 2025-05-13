@@ -4,16 +4,29 @@ from tkinter import messagebox
 from gui.add_book_fom import AddBookForm
 from models.book import Book
 
+from database.book_database import BookDatabase
+
+# db = BookDatabase()
+# db.add_book("1984", "George Orwell")
+# print(db.get_all_books())
+# db.close()
+
+
 class MainWindow: 
     def __init__(self, root):
         self.root = root
+        self.db = BookDatabase()
+        self.books = [] #Lista local de objetos Book
         self.root.title("Book Manager")
         
         self.books = []
 
         self.create_widgets()
+        self.root.protocol("WM_DELETE_WINDOW", self.on_close)
 
     def create_widgets(self):
+
+        self.load_books()
 
         self.label = tk.Label(self.root, text="Bienvenido a Book Manager")
         self.label.pack(padx=20, pady=20)
@@ -32,6 +45,14 @@ class MainWindow:
         self.delete_button = tk.Button(self.root, text="Delete Book", command=self.delete_book)
         self.delete_button.pack(pady=5)
 
+    def load_books(self):
+        self.books_listbox.delete(0, tk.END) #Limpiar la lista
+        books = self.db.get_all_books()
+
+        for book in books:
+            book_id, title, author = book
+            display_text = f"{title} by {author}"
+            self.books_listbox.insert(tk.END, display_text)
 
     def add_book(self):
         #Aquí podemos abrir un formulario para agregar un libro
@@ -40,10 +61,12 @@ class MainWindow:
         if form.result:
             title = form.result["title"]
             author = form.result["author"]
-            new_book = Book(title, author)
+            
+            #Guarda en la base de datos
+            self.db.add_book(title, author)
 
-            self.books.append(new_book)
-            self.books_listbox.insert(tk.END, str(new_book))
+            #Recargar en la lista
+            self.load_books()
 
     def edit_book(self):
         # Aquí podemos abrir un formulario para editar un libro seleccionado
@@ -52,8 +75,16 @@ class MainWindow:
     def delete_book(self):
         # Aquí podemos abrir un formulario para borrar un libro seleccionado
         messagebox.showinfo("Delete Book", "Confirm deletion of a book")
+        
+    
+    def on_close(self):
+        self.db.close()
+        self.root.destroy()
 
 if __name__ == "__main__":
     root = tk.Tk()
     app = MainWindow(root)
     root.mainloop()
+
+
+
