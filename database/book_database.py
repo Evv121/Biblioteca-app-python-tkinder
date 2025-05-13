@@ -33,6 +33,17 @@ class BookDatabase:
                 (title, author, book_id)
             )
     
+    def get_book(self, book_id):
+        cursor = self.connection.cursor()
+        cursor.execute("SELECT id, title, author FROM books WHERE id = ?", (book_id,))
+        return cursor.fetchone()
+    
+    def update_book(self, book_id, title, author):
+        with self.connection:
+            self.connection.execute(
+                "UPDATE books SET title = ?, author = ?, WHERE id = ?", (title, author, book_id)
+            )
+    
     def close(self):
         self.connection.close()
 

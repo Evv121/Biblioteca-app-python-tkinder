@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import messagebox
 
-from gui.add_book_fom import AddBookForm
+from gui.add_book_form import AddBookForm
 from models.book import Book
 
 from database.book_database import BookDatabase
@@ -14,11 +14,13 @@ from database.book_database import BookDatabase
 
 class MainWindow: 
     def __init__(self, root):
+       
         self.root = root
         self.db = BookDatabase()
         self.books = [] #Lista local de objetos Book
         self.root.title("Book Manager")
-        
+        self.books_ids = []
+
         self.books = []
 
         self.create_widgets()
@@ -72,8 +74,25 @@ class MainWindow:
             self.load_books()
 
     def edit_book(self):
-        # Aquí podemos abrir un formulario para editar un libro seleccionado
-        messagebox.showinfo("Edit Book", "Form to edit a book")
+        selection = self.books_listbox.curselection()
+
+        if not selection:
+            messagebox.showwarning("Edit Book", "No book selected")
+            return 
+        
+        index = selection[0]
+        book_id = self.book_ids[index]
+        book_data = self.db.get_book(book_id)
+
+        if book_data:
+            _, title, author = book_data
+            form = AddBookForm(self.root, book_data=(title, author))
+
+            if form.result:
+                new_title = form.result["title"]
+                new_author = form.result["author"]
+                self.db.update_book(book_id, new_title, new_author)
+                self.load_books()
 
     def delete_book(self):
 
@@ -89,7 +108,7 @@ class MainWindow:
         confirm = messagebox.askyesno("Delete Book", "Are you sure you want to delete this book?")
         if confirm:
             self.db.delete_book(book_id)
-            self.load_boooks()       
+            self.load_books()       
     
     def on_close(self):
         self.db.close()
