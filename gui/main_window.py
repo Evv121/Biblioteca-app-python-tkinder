@@ -9,19 +9,23 @@ class MainWindow:
         self.create_widgets()
 
     def create_widgets(self):
-    #Crear una lista de libros (ejemplo)
-    self.books_listbox = tk.Listbox(self.root)
-    self.books_listbox.pack(padx=10, pady=10)
 
-    #Botones para las acciones
-    self.add_button = tk.Button(self.root, text="Add Book", command=self.add_book)
-    self.add_button.pack(pady=5)
+        self.label = tk.Label(self.root, text="Bienvenido a Book Manager")
+        self.label.pack(padx=20, pady=20)
 
-    self.edit_button = tk.Button(self.root, text="Edit Book", command=self.edit_book)
-    self.edit_button.pack(pady=5)
+        #Crear una lista de libros (ejemplo)
+        self.books_listbox = tk.Listbox(self.root)
+        self.books_listbox.pack(padx=10, pady=10)
 
-    self.delete_button = tk.Button(self.root, text="Delete Book", command=self.delete_book)
-    self.delete_button.pack(pady=5)
+        #Botones para las acciones
+        self.add_button = tk.Button(self.root, text="Add Book", command=self.add_book)
+        self.add_button.pack(pady=5)
+
+        self.edit_button = tk.Button(self.root, text="Edit Book", command=self.edit_book)
+        self.edit_button.pack(pady=5)
+
+        self.delete_button = tk.Button(self.root, text="Delete Book", command=self.delete_book)
+        self.delete_button.pack(pady=5)
 
 
     def add_book(self):
