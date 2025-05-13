@@ -47,12 +47,15 @@ class MainWindow:
 
     def load_books(self):
         self.books_listbox.delete(0, tk.END) #Limpiar la lista
+        self.books_ids.clear()
+
         books = self.db.get_all_books()
 
         for book in books:
             book_id, title, author = book
             display_text = f"{title} by {author}"
             self.books_listbox.insert(tk.END, display_text)
+            self.books_ids.append(book_id)
 
     def add_book(self):
         #Aquí podemos abrir un formulario para agregar un libro
@@ -73,9 +76,20 @@ class MainWindow:
         messagebox.showinfo("Edit Book", "Form to edit a book")
 
     def delete_book(self):
-        # Aquí podemos abrir un formulario para borrar un libro seleccionado
-        messagebox.showinfo("Delete Book", "Confirm deletion of a book")
+
+        selection = self.books_listbox.curselection()
+
+        if not selection:
+            messagebox.showwarning("Delete Book", "No book selected")
+            return
         
+        index = selection[0]
+        book_id = self.book_ids[index]
+
+        confirm = messagebox.askyesno("Delete Book", "Are you sure you want to delete this book?")
+        if confirm:
+            self.db.delete_book(book_id)
+            self.load_boooks()       
     
     def on_close(self):
         self.db.close()
