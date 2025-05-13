@@ -2,11 +2,14 @@ import tkinter as tk
 from tkinter import messagebox
 
 from gui.add_book_fom import AddBookForm
+from models.book import Book
 
 class MainWindow: 
     def __init__(self, root):
         self.root = root
         self.root.title("Book Manager")
+        
+        self.books = []
 
         self.create_widgets()
 
@@ -37,15 +40,17 @@ class MainWindow:
         if form.result:
             title = form.result["title"]
             author = form.result["author"]
-            display_text = f"{title} by {author}"
-            self.books_listbox.insert(tk.END, display_text)
+            new_book = Book(title, author)
+
+            self.books.append(new_book)
+            self.books_listbox.insert(tk.END, str(new_book))
 
     def edit_book(self):
-        # Aquí podrías abrir un formulario para editar un libro seleccionado
+        # Aquí podemos abrir un formulario para editar un libro seleccionado
         messagebox.showinfo("Edit Book", "Form to edit a book")
 
     def delete_book(self):
-        # Aquí podrías abrir un formulario para borrar un libro seleccionado
+        # Aquí podemos abrir un formulario para borrar un libro seleccionado
         messagebox.showinfo("Delete Book", "Confirm deletion of a book")
 
 if __name__ == "__main__":
